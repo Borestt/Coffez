@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#201913">
+  <meta name="description" content="Cafés especiais, direto para a sua casa.">
+  <title>E-Coffee — Café com origem</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./receipt.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#inicio" aria-label="E-Coffee, início"><span class="brand-mark">e</span><span>E-Coffee<span class="brand-dot">.</span></span></a>
+    <nav class="main-nav" aria-label="Navegação principal"><a href="#catalogo">Nosso café</a><a href="#origem">Nossa origem</a></nav>
+    <div class="top-actions">
+      <span class="api-status" id="api-status"><span class="status-dot"></span><span id="api-status-label">Conectando à loja…</span></span>
+      <button class="icon-button cart-trigger" id="open-cart" type="button" aria-label="Abrir carrinho">Carrinho <span class="cart-count" id="cart-count">0</span></button>
+    </div>
+  </header>
+
+  <main id="inicio">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-line"></span> CAFÉ DE ORIGEM, FEITO PARA PAUSAR</p>
+        <h1>Seu próximo<br>café favorito <em>está aqui.</em></h1>
+        <p class="hero-description">Grãos selecionados, torra fresca e histórias que começam em boas fazendas. Encontre o seu ritual.</p>
+        <a class="button button-light" href="#catalogo">Explorar cafés <span aria-hidden="true">↗</span></a>
+        <div class="hero-note"><span class="avatar-stack"><i>☕</i><i>✦</i><i>♥</i></span><span>Feito com cuidado, do grão à xícara.</span></div>
+      </div>
+      <div class="hero-art" aria-label="Xícara de café especial sobre uma mesa" role="img">
+        <div class="sun-disc"></div><div class="coffee-bean bean-one"></div><div class="coffee-bean bean-two"></div>
+        <div class="hero-stamp"><span>TORRA</span><strong>FRESCA</strong><span>TODA SEMANA</span></div>
+        <div class="hero-caption"><span>01 / 03</span><span>Origem • sabor • afeto</span></div>
+      </div>
+    </section>
+
+    <section class="benefits" aria-label="Vantagens da E-Coffee"><div><span class="benefit-icon">✳</span><span><strong>Torra fresca</strong><small>Em pequenos lotes</small></span></div><div><span class="benefit-icon">⌁</span><span><strong>Origem rastreável</strong><small>Do produtor até você</small></span></div><div><span class="benefit-icon">♡</span><span><strong>Compra segura</strong><small>Pagamento protegido</small></span></div></section>
+
+    <section class="catalog section-wrap" id="catalogo">
+      <div class="section-heading"><div><p class="eyebrow"><span class="eyebrow-line"></span> ESCOLHAS DA CASA</p><h2>O café certo para<br><em>o seu momento.</em></h2></div><p class="section-aside">Uma seleção pequena e especial, com personalidade em cada xícara.</p></div>
+      <div class="filters" id="filters" aria-label="Filtrar produtos"><button class="filter-chip active" data-category="all" type="button">Todos os cafés</button></div>
+      <div class="product-grid" id="product-grid" aria-live="polite"><div class="loading-state"><span class="loader"></span><span>Buscando os cafés da casa…</span></div></div>
+      <div class="catalog-error" id="catalog-error" hidden></div>
+    </section>
+
+    <section class="origin" id="origem"><div class="origin-image" aria-hidden="true"><span class="origin-seal">DESDE<br><b>2024</b></span></div><div class="origin-copy"><p class="eyebrow"><span class="eyebrow-line"></span> MAIS QUE CAFÉ</p><h2>Uma pausa com<br><em>propósito.</em></h2><p>Acreditamos que um bom café aproxima pessoas. Por isso, valorizamos quem planta, respeitamos o tempo da torra e cuidamos de cada detalhe até a sua xícara.</p><a href="#catalogo" class="text-link">Conheça nossa seleção <span aria-hidden="true">→</span></a></div></section>
+  </main>
+
+  <footer class="footer"><a class="brand footer-brand" href="#inicio"><span class="brand-mark">e</span><span>E-Coffee<span class="brand-dot">.</span></span></a><p>Boas pausas começam por aqui.</p><small>© 2026 E-Coffee. Café com origem.</small></footer>
+
+  <div class="scrim" id="scrim" hidden></div>
+  <aside class="cart-drawer" id="cart-drawer" aria-labelledby="cart-title" aria-hidden="true">
+    <div class="drawer-header"><div><p class="eyebrow">SUA SELEÇÃO</p><h2 id="cart-title">Carrinho <span id="drawer-count">(0)</span></h2></div><button class="close-button" id="close-cart" type="button" aria-label="Fechar carrinho">×</button></div>
+    <div class="cart-content" id="cart-content"><div class="empty-cart"><span>☕</span><strong>Seu carrinho está esperando.</strong><p>Escolha um café para começar uma boa pausa.</p><button class="button button-dark" id="continue-shopping" type="button">Ver cafés</button></div></div>
+    <div class="cart-footer" id="cart-footer" hidden><div class="subtotal"><span>Total</span><strong id="cart-total">R$ 0,00</strong></div><button class="button button-dark checkout-button" id="checkout-button" type="button">Finalizar compra <span aria-hidden="true">→</span></button></div>
+  </aside>
+
+  <dialog class="checkout-dialog" id="checkout-dialog">
+    <form id="checkout-form" class="checkout-form">
+      <button class="close-button dialog-close" id="close-checkout" type="button" aria-label="Fechar checkout">×</button>
+      <p class="eyebrow"><span class="eyebrow-line"></span> QUASE LÁ</p><h2>Confirmar<br><em>pedido.</em></h2>
+      <div class="checkout-total"><span>Total do pedido</span><strong id="checkout-total">R$ 0,00</strong></div>
+      <p class="checkout-disclaimer">O pedido será validado e registrado no banco de dados.</p>
+      <button class="button button-dark checkout-submit" type="submit">Confirmar pedido <span aria-hidden="true">→</span></button>
+      <p class="form-message" id="checkout-message" role="status"></p>
+    </form>
+    <section class="receipt-panel" id="receipt-panel" aria-labelledby="receipt-title" hidden>
+      <button class="close-button dialog-close" id="close-receipt" type="button" aria-label="Fechar recibo">×</button>
+      <p class="eyebrow"><span class="eyebrow-line"></span> COMPROVANTE DE TESTE</p>
+      <div class="receipt-status"><span aria-hidden="true">✓</span><div><h2 id="receipt-title">Pedido confirmado</h2><p>Este recibo é apenas para visualização do teste.</p></div></div>
+      <div class="receipt-meta"><span>Número do pedido<strong id="receipt-order-id">—</strong></span><span>Data<strong id="receipt-date">—</strong></span></div>
+      <div class="receipt-items-heading"><span>Item</span><span>Subtotal</span></div>
+      <div class="receipt-items" id="receipt-items"></div>
+      <div class="receipt-total"><span>Total confirmado</span><strong id="receipt-total">R$ 0,00</strong></div>
+      <p class="receipt-note">Pedido registrado pela API para fins acadêmicos. Não representa pagamento real.</p>
+      <div class="receipt-actions"><button class="button button-light" id="print-receipt" type="button">Imprimir recibo</button><button class="button button-dark" id="done-receipt" type="button">Concluir</button></div>
+    </section>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
