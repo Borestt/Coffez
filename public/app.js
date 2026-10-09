@@ -1,12 +1,13 @@
 const API_BASE = (window.ECOFFEE_API_URL || '/api').replace(/\/$/, '');
 const CART_USER_KEY = 'ecoffee-cart-user';
 
-const state = { products: [], cart: [], category: 'all', busy: false };
+const state = { products: [], cart: [], cartTtlMs: 0, cartTimer: null, category: 'all', busy: false };
 const elements = {
   apiStatus: document.querySelector('#api-status'), apiStatusLabel: document.querySelector('#api-status-label'),
   productGrid: document.querySelector('#product-grid'), catalogError: document.querySelector('#catalog-error'),
   filters: document.querySelector('#filters'), cartDrawer: document.querySelector('#cart-drawer'),
   cartContent: document.querySelector('#cart-content'), cartFooter: document.querySelector('#cart-footer'),
+  cartExpiry: document.querySelector('#cart-expiry'), cartExpiryTime: document.querySelector('#cart-expiry-time'),
   cartCount: document.querySelector('#cart-count'), drawerCount: document.querySelector('#drawer-count'),
   cartTotal: document.querySelector('#cart-total'), checkoutTotal: document.querySelector('#checkout-total'),
   scrim: document.querySelector('#scrim'), checkoutDialog: document.querySelector('#checkout-dialog'),
@@ -222,6 +223,7 @@ async function loadCart() {
   try {
     const data = await apiRequest(`/carrinho/${encodeURIComponent(getUserId())}`);
     const items = Array.isArray(data) ? data : (data?.itens ?? data?.items ?? data?.carrinho ?? []);
+    state.cartTtlMs = Number(data?.ttlMs);
     const grouped = new Map();
     for (const rawItem of items) {
       const item = normalizeCartItem(rawItem);
@@ -253,6 +255,7 @@ async function removeCartProduct(productId, button) {
 function renderCart() {
   const count = state.cart.reduce((sum, item) => sum + item.quantity, 0);
   const total = state.cart.reduce((sum, item) => sum + item.total, 0);
+  updateCartTimer(state.cartTtlMs);
   elements.cartCount.textContent = String(count);
   elements.drawerCount.textContent = `(${count})`;
   elements.cartTotal.textContent = formatPrice(total);
@@ -310,6 +313,34 @@ function renderCart() {
     row.append(thumb, details, right);
     elements.cartContent.append(row);
   }
+}
+
+function updateCartTimer(ttlMs) {
+  clearInterval(state.cartTimer);
+  state.cartTimer = null;
+  if (!state.cart.length || !Number.isFinite(ttlMs) || ttlMs <= 0) {
+    elements.cartExpiry.hidden = true;
+    return;
+  }
+
+  const expiresAt = Date.now() + ttlMs;
+  elements.cartExpiry.hidden = false;
+  const tick = () => {
+    const remainingMs = expiresAt - Date.now();
+    const remainingSeconds = Math.max(0, Math.ceil(remainingMs / 1000));
+    const minutes = String(Math.floor(remainingSeconds / 60)).padStart(2, '0');
+    const seconds = String(remainingSeconds % 60).padStart(2, '0');
+    elements.cartExpiryTime.textContent = `${minutes}:${seconds}`;
+
+    if (remainingMs <= 0) {
+      clearInterval(state.cartTimer);
+      state.cartTimer = null;
+      loadCart();
+    }
+  };
+
+  tick();
+  state.cartTimer = setInterval(tick, 1000);
 }
 
 function openCart() {

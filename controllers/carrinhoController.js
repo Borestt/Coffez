@@ -1,6 +1,6 @@
 import { redisClient } from '../config/redis.js';
 
-const TEMPO_EXPIRACAO_SEGUNDOS = 60 * 60;
+const TEMPO_EXPIRACAO_SEGUNDOS = 2 * 60;
 
 function validarUsuario(idUsuario) {
 	const id = Number(idUsuario);
@@ -27,7 +27,7 @@ export async function adicionarAoCarrinho(req, res) {
 		const itens = (await redisClient.lRange(chave, 0, -1)).map(valor => JSON.parse(valor));
 
 		return res.status(200).json({
-			mensagem: 'Item adicionado ao carrinho. Ele expira após uma hora sem atividade.',
+			mensagem: 'Item adicionado ao carrinho. Ele expira após dois minutos sem atividade.',
 			carrinho: itens,
 			ttlSegundos: TEMPO_EXPIRACAO_SEGUNDOS
 		});
@@ -45,9 +45,11 @@ export async function verCarrinho(req, res) {
 			return res.status(503).json({ mensagem: 'Redis não está conectado.' });
 		}
 
-		const itens = (await redisClient.lRange(`carrinho:${idUsuario}`, 0, -1))
+		const chave = `carrinho:${idUsuario}`;
+		const itens = (await redisClient.lRange(chave, 0, -1))
 			.map(valor => JSON.parse(valor));
-		return res.json({ usuario: idUsuario, itens });
+		const ttlMs = itens.length ? Math.max(0, await redisClient.pTTL(chave)) : 0;
+		return res.json({ usuario: idUsuario, itens, ttlMs });
 	} catch (erro) {
 		console.error('[CARRINHO] Falha ao consultar carrinho:', erro.message);
 		return res.status(500).json({ mensagem: 'Não foi possível consultar o carrinho.' });
